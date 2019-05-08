@@ -114,7 +114,7 @@ app.get('/profile/:id',(req,res)=>{
 })
 
 const appCla = new Clarifai.App({
- apiKey: '4cca6586b2f24591af54a50c13faf688'
+ apiKey: `${process.env.clarifai_key}`
 });
 
 app.post('/handleApiCall',(req,res)=>{
