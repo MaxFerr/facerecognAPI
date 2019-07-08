@@ -24,13 +24,18 @@ app.get('/',(req,res)=>{
 	res.json(db.users);
 })
 
+const check=(data)=>{
+	if(data.split('').filter(x => x === '{').length >= 1){
+		return true
+	}else{
+		return false
+	}
+}
+
 app.post('/signin',(req,res)=>{
 	const {email,password}=req.body;
-	if (!email||
-		email.split('').filter(x => x === '{').length === 1||		
-		!password||
-		password.split('').filter(x => x === '{').length === 1) {
-    return res.status(400).json('wrong credentials');
+	if (!email||check(email)||!password||check(password)) {
+  	  return res.status(400).json('wrong credentials');
   	}
 	//select email and hash from the database (login)
 	db.select('email','hash').from('login')
@@ -58,12 +63,8 @@ app.post('/signin',(req,res)=>{
 app.post('/register',(req,res)=>{
 	const {email,name,password}=req.body;
 	//hash the password receive from the FE with bcrypt
-	if (!email||
-		email.split('').filter(x => x === '{').length === 1||
-		!name||
-		name.split('').filter(x => x === '{').length === 1||
-		!password||password.split('').filter(x => x === '{').length === 1) {
-    return res.status(400).json('incorrect form submission');
+	if (!email||check(email)||!password||check(password)||!name||check(name)) {
+    	return res.status(400).json('incorrect form submission');
   	}
 	const hash= bcrypt.hashSync(password);
 	//insert email and password/hash to the db, Use a transaction cause we need 
